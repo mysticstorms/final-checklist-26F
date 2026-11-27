@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTM6303 — Assignment 2 Foundations &amp; Final Project 1 Bridge (Sneza M Drouin)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            earth: {
+              bg: '#181a1b',
+              card: '#22252a',
+              cardHover: '#282c32',
+              border: '#32373f',
+              sage: '#8da350',
+              sageDark: '#6f823c',
+              terracotta: '#E07A5F',
+              slate: '#3D405B',
+              text: '#e8eaed',
+              muted: '#a2a8b0',
+              codeBg: '#121415'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #181a1b;
+      color: #e8eaed;
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.65;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #181a1b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #32373f;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8da350;
+    }
+
+    .step-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 1.35rem;
+      height: 1.35rem;
+      border: 2px solid #8da350;
+      border-radius: 0.375rem;
+      background-color: #181a1b;
+      cursor: pointer;
+      display: inline-grid;
+      place-content: center;
+      transition: all 0.18s ease;
+      flex-shrink: 0;
+    }
+    .step-checkbox::before {
+      content: "";
+      width: 0.75rem;
+      height: 0.75rem;
+      transform: scale(0);
+      transition: 0.15s transform ease-in-out;
+      box-shadow: inset 1em 1em #181a1b;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+    .step-checkbox:checked {
+      background-color: #8da350;
+      border-color: #8da350;
+    }
+    .step-checkbox:checked::before {
+      transform: scale(1);
+    }
+    .step-checkbox:focus-visible {
+      outline: 2px solid #E07A5F;
+      outline-offset: 2px;
+    }
+
+    .step-card.is-complete {
+      border-color: rgba(141, 163, 80, 0.45);
+      background-color: rgba(34, 37, 42, 0.68);
+    }
+    .step-card.is-complete .step-title {
+      color: #a2a8b0;
+      text-decoration: line-through;
+      text-decoration-color: #8da350;
+    }
+
+    pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      tab-size: 4;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-earth-sage selection:text-earth-bg">
+
+  <!-- Sticky Top Header -->
+  <header class="sticky top-0 z-40 bg-[#181a1b]/95 backdrop-blur-md border-b border-earth-border shadow-lg">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span class="px-2.5 py-0.5 text-xs font-mono font-semibold uppercase tracking-wider rounded-md bg-earth-slate text-white">
+              26F_MTM6303_010 &bull; Algonquin College
+            </span>
+            <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded-md bg-earth-card border border-earth-border text-earth-sage">
+              Student: Sneza M Drouin
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight">
+            Assignment 2 Foundations &amp; Final Project 1 Bridge
+          </h1>
+        </div>
+
+        <!-- Status & Deadline Badge -->
+        <div class="flex items-center gap-3 self-start md:self-center bg-earth-card border border-earth-terracotta/50 rounded-xl px-3.5 py-2 shadow-sm">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-earth-terracotta opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-earth-terracotta"></span>
+          </span>
+          <div class="text-xs">
+            <div class="font-semibold text-earth-terracotta">Final Project 1 Due: Nov 27, 2026 @ 3:00 PM</div>
+            <div id="countdown-timer" class="font-mono text-earth-muted">Calculating remaining time...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mt-4 pt-3 border-t border-earth-border/70">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs mb-1.5">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-earth-text">Foundation &amp; Final Progress:</span>
+            <span id="progress-count" class="font-mono font-semibold text-earth-sage">0 / 15 checks completed (0%)</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="save-status-msg" class="text-earth-muted hidden sm:inline">All checkboxes &amp; notes saved locally.</span>
+            <button id="reset-progress-btn" type="button" class="text-xs text-earth-muted hover:text-earth-terracotta underline underline-offset-2 transition">
+              Reset Checks &amp; Notes
+            </button>
+          </div>
+        </div>
+        <div class="w-full h-2.5 bg-earth-codeBg rounded-full overflow-hidden border border-earth-border">
+          <div id="progress-bar-fill" class="h-full bg-earth-sage transition-all duration-300 ease-out rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="mt-4 flex flex-wrap items-center gap-2" aria-label="Workspace Tabs">
+        <button id="tab-follow" type="button" onclick="switchTab('follow')"
+          class="px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 bg-earth-sage text-earth-bg shadow">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Follow-Along Steps
+        </button>
+        <button id="tab-checklist" type="button" onclick="switchTab('checklist')"
+          class="px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 bg-earth-card text-earth-text border border-earth-border hover:border-earth-sage">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          Interactive Checklist
+        </button>
+        <button id="tab-snippets" type="button" onclick="switchTab('snippets')"
+          class="px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 bg-earth-card text-earth-text border border-earth-border hover:border-earth-sage">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          Quick Code &amp; Log Snippets
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Toast Notification -->
+  <div id="toast-banner" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-earth-card border border-earth-sage text-earth-text shadow-2xl text-sm font-medium">
+    <span class="w-2 h-2 rounded-full bg-earth-sage"></span>
+    <span id="toast-text">Copied to clipboard!</span>
+  </div>
+
+  <!-- Reset Modal (No native alert/confirm) -->
+  <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 p-4">
+    <div class="bg-earth-card border border-earth-border rounded-2xl max-w-md w-full p-6 shadow-2xl">
+      <h3 class="text-lg font-bold text-white mb-2">Reset all checklist checks &amp; notes?</h3>
+      <p class="text-sm text-earth-muted mb-5">This clears your saved browser checkboxes and step notes. Your actual WordPress theme files on your computer or Google Drive remain untouched.</p>
+      <div class="flex justify-end gap-3">
+        <button type="button" onclick="closeResetModal()" class="px-4 py-2 rounded-lg text-sm font-medium bg-earth-bg border border-earth-border text-earth-text hover:bg-earth-cardHover">
+          Cancel
+        </button>
+        <button type="button" onclick="confirmResetProgress()" class="px-4 py-2 rounded-lg text-sm font-semibold bg-earth-terracotta text-earth-bg hover:opacity-90">
+          Yes, Reset All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
+
+    <!-- ==================== TAB 1: FOLLOW-ALONG STEPS ==================== -->
+    <section id="panel-follow" class="space-y-8">
+      <!-- Intro & Audit Summary from Uploaded Files -->
+      <div class="bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-6 shadow-md">
+        <div class="flex items-start gap-3.5">
+          <div class="p-2.5 rounded-xl bg-earth-sage/15 text-earth-sage shrink-0 mt-0.5">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-base sm:text-lg font-bold text-white">
+              Deep Breath, Sneza — Here Is Where Your Serbia Files Stand
+            </h2>
+            <p class="text-sm text-earth-muted">
+              Assignment 2's deadline has passed, so focus your energy where it counts most: the Final Project 1 brief requires that <em>"Assignment 2 requirements must be completed if still missing."</em> Your uploaded Serbia theme already has great bones—a clean palette (<code class="font-mono text-earth-sage">#0C4076</code> ink, <code class="font-mono text-earth-sage">#C6363C</code> brand, <code class="font-mono text-earth-sage">#ffffff</code> paper, <code class="font-mono text-earth-sage">#e5efec</code> soft), <code class="font-mono text-earth-sage">page.php</code> thumbnail/title logic, <code class="font-mono text-earth-sage">front-page.php</code> Loop &amp; template parts, and <code class="font-mono text-earth-sage">screenshot.jpeg</code>. Below are the exact Assignment 2 gaps to patch first, followed by how they feed straight into Final Project 1.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP A2-1: Folder & Theme Header Metadata -->
+      <article class="step-card bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-7 shadow-md transition" data-step="a2-1">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <span class="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-earth-terracotta mb-1">
+              Assignment 2 Fix #1 &bull; Folder Name &amp; style.css Header
+            </span>
+            <h3 class="step-title text-lg sm:text-xl font-bold text-white">
+              1. Set Theme Folder to <code>cms2-project</code> &amp; Author to Sneza M Drouin
+            </h3>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer select-none bg-earth-bg px-3 py-1.5 rounded-lg border border-earth-border hover:border-earth-sage">
+            <input type="checkbox" class="step-checkbox sync-check" data-check-id="chk-a2-1" />
+            <span class="text-xs font-semibold text-earth-text">Done</span>
+          </label>
+        </div>
+        <p class="text-sm text-earth-muted mb-3">
+          First, make a safe backup copy of your current <code class="font-mono text-earth-sage">serbia-guide-practice</code> folder (and your Google Drive backup) so you never lose work. Then for your submission theme:
+        </p>
+        <ul class="space-y-1.5 text-sm text-earth-text list-disc pl-5 marker:text-earth-sage mb-4">
+          <li>Name the theme directory <code class="font-mono text-earth-sage">cms2-project</code> inside <code class="font-mono text-earth-muted">wp-content/themes/</code> (and activate <strong>CMS II Project</strong> in WP Admin &rarr; Appearance &rarr; Themes).</li>
+          <li>Update the top header comment in <code class="font-mono text-earth-sage">style.css</code> so <code class="font-mono text-white">Theme Name: CMS II Project</code> and <code class="font-mono text-white">Author: Sneza M Drouin</code>.</li>
+        </ul>
+
+        <div class="rounded-xl overflow-hidden border border-earth-border bg-earth-codeBg mb-3">
+          <div class="flex items-center justify-between px-4 py-2 bg-[#1c1f23] border-b border-earth-border">
+            <span class="text-xs font-mono text-earth-sage">cms2-project/style.css (Top Theme Header)</span>
+            <button type="button" onclick="copyCode('snip-a2-1', this)" class="px-2.5 py-1 text-xs font-mono font-medium rounded bg-earth-slate text-white hover:bg-earth-sage hover:text-earth-bg transition">
+              Copy
+            </button>
+          </div>
+          <pre class="p-4 overflow-x-auto text-earth-text"><code id="snip-a2-1">/*
+Theme Name: CMS II Project
+Author: Sneza M Drouin
+Description: Serbia destination showcasing WordPress theme for MTM6303 Final Project 1.
+Version: 1.0
+Text Domain: cms2-project
+*/</code></pre>
+        </div>
+
+        <div class="bg-earth-bg/90 border-l-4 border-earth-sage rounded-r-xl p-3 text-xs text-earth-muted mb-3">
+          <strong class="text-earth-sage uppercase tracking-wider">What to Check:</strong> Go to <strong>Appearance &rarr; Themes</strong> in WordPress Admin and verify <strong>CMS II Project</strong> by <strong>Sneza M Drouin</strong> is active with its theme screenshot showing.
+        </div>
+
+        <label class="block text-xs font-mono text-earth-muted mb-1">Personal Note (saved automatically):</label>
+        <textarea data-note-id="note-a2-1" rows="2" placeholder="e.g., Backed up serbia-guide-practice to Drive; renamed folder to cms2-project..."
+          class="step-note w-full rounded-xl bg-earth-bg border border-earth-border px-3.5 py-2 text-xs text-earth-text placeholder:text-earth-muted/60 focus:outline-none focus:border-earth-sage"></textarea>
+      </article>
+
+      <!-- STEP A2-2: 3-Question Docblocks on All 6 PHP Files -->
+      <article class="step-card bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-7 shadow-md transition" data-step="a2-2">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <span class="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-earth-terracotta mb-1">
+              Assignment 2 Fix #2 &bull; All 6 Required PHP Files
+            </span>
+            <h3 class="step-title text-lg sm:text-xl font-bold text-white">
+              2. Add Full 3-Question Block Comments to All 6 PHP Files
+            </h3>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer select-none bg-earth-bg px-3 py-1.5 rounded-lg border border-earth-border hover:border-earth-sage">
+            <input type="checkbox" class="step-checkbox sync-check" data-check-id="chk-a2-2" />
+            <span class="text-xs font-semibold text-earth-text">Done</span>
+          </label>
+        </div>
+        <p class="text-sm text-earth-muted mb-3">
+          Assignment 2 requires a block comment at the top of <strong>each</strong> of the 6 core PHP files (<code class="font-mono text-earth-sage">index.php</code>, <code class="font-mono text-earth-sage">page.php</code>, <code class="font-mono text-earth-sage">footer.php</code>, <code class="font-mono text-earth-sage">header.php</code>, <code class="font-mono text-earth-sage">functions.php</code>, <code class="font-mono text-earth-sage">front-page.php</code>) answering three specific questions:
+        </p>
+        <ol class="space-y-1 text-sm text-earth-text list-decimal pl-5 marker:text-earth-sage marker:font-mono mb-4">
+          <li>What this file does in the WordPress template hierarchy?</li>
+          <li>Why this file needs to exist as a separate file?</li>
+          <li>How this file connects to other template files in this theme?</li>
+        </ol>
+        <p class="text-xs text-earth-muted mb-3">
+          Right now your uploaded files only have short 1–2 line comments. Grab the complete 6-file comment templates inside the <strong>Quick Code &amp; Log Snippets</strong> tab above and paste them at the very top of each file.
+        </p>
+        <div class="bg-earth-bg/90 border-l-4 border-earth-sage rounded-r-xl p-3 text-xs text-earth-muted mb-3">
+          <strong class="text-earth-sage uppercase tracking-wider">What to Check:</strong> Open all 6 files in VS Code and confirm every single one clearly answers all 3 questions in its top PHP comment block without breaking <code class="font-mono text-white">&lt;?php</code> tags.
+        </div>
+        <textarea data-note-id="note-a2-2" rows="2" placeholder="Notes on 6 PHP file header comments..."
+          class="step-note w-full rounded-xl bg-earth-bg border border-earth-border px-3.5 py-2 text-xs text-earth-text placeholder:text-earth-muted/60 focus:outline-none focus:border-earth-sage"></textarea>
+      </article>
+
+      <!-- STEP A2-3: Breakpoint Comments, Images & Palette Screenshot -->
+      <article class="step-card bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-7 shadow-md transition" data-step="a2-3">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <span class="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-earth-terracotta mb-1">
+              Assignment 2 Fix #3 &bull; style.css, Images &amp; Palette Evidence
+            </span>
+            <h3 class="step-title text-lg sm:text-xl font-bold text-white">
+              3. Document @media Breakpoints, 5+ Images &amp; Colour Palette Screenshot
+            </h3>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer select-none bg-earth-bg px-3 py-1.5 rounded-lg border border-earth-border hover:border-earth-sage">
+            <input type="checkbox" class="step-checkbox sync-check" data-check-id="chk-a2-3" />
+            <span class="text-xs font-semibold text-earth-text">Done</span>
+          </label>
+        </div>
+        <ul class="space-y-2 text-sm text-earth-text list-disc pl-5 marker:text-earth-sage mb-4">
+          <li><strong>@media query documentation:</strong> Your <code class="font-mono text-earth-sage">style.css</code> already explains <code class="font-mono text-white">@media (max-width: 48rem)</code> for <code class="font-mono text-white">.footer-columns</code>. If you add any other <code class="font-mono text-white">@media</code> rules (for mobile nav, cards, or header), add a comment above each one stating: <em>what breakpoint you chose</em>, <em>what changes</em>, and <em>why</em>.</li>
+          <li><strong>5+ destination images:</strong> Ensure at least <strong>5 images</strong> exist in your theme/site (hero, featured images on pages, gallery/cards).</li>
+          <li><strong>Colour palette screenshot:</strong> Save a visual screenshot of your 4+ colour palette (<code class="font-mono text-white">#0C4076</code>, <code class="font-mono text-white">#C6363C</code>, <code class="font-mono text-white">#ffffff</code>, <code class="font-mono text-white">#e5efec</code>) to include inside your ZIP submission.</li>
+        </ul>
+        <div class="bg-earth-bg/90 border-l-4 border-earth-sage rounded-r-xl p-3 text-xs text-earth-muted mb-3">
+          <strong class="text-earth-sage uppercase tracking-wider">What to Check:</strong> Resize your browser from desktop down to 375px—confirm zero horizontal scroll and verify your palette screenshot file is saved in your project folder.
+        </div>
+        <textarea data-note-id="note-a2-3" rows="2" placeholder="List where your 5+ Serbia images are located and palette screenshot filename..."
+          class="step-note w-full rounded-xl bg-earth-bg border border-earth-border px-3.5 py-2 text-xs text-earth-text placeholder:text-earth-muted/60 focus:outline-none focus:border-earth-sage"></textarea>
+      </article>
+
+      <!-- STEP A2-4: 4+ Pages & page.php Dynamic Logic -->
+      <article class="step-card bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-7 shadow-md transition" data-step="a2-4">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <span class="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-earth-terracotta mb-1">
+              Assignment 2 Fix #4 &bull; Pages &amp; page.php
+            </span>
+            <h3 class="step-title text-lg sm:text-xl font-bold text-white">
+              4. Confirm 4+ Pages (Home + 3 Inner Pages) &amp; Featured Image Logic
+            </h3>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer select-none bg-earth-bg px-3 py-1.5 rounded-lg border border-earth-border hover:border-earth-sage">
+            <input type="checkbox" class="step-checkbox sync-check" data-check-id="chk-a2-4" />
+            <span class="text-xs font-semibold text-earth-text">Done</span>
+          </label>
+        </div>
+        <p class="text-sm text-earth-muted mb-3">
+          Your uploaded <code class="font-mono text-earth-sage">page.php</code> already outputs the dynamic title (<code class="font-mono text-white">the_title('&lt;h1&gt;', '&lt;/h1&gt;')</code>), checks <code class="font-mono text-white">has_post_thumbnail()</code> and calls <code class="font-mono text-white">the_post_thumbnail('large')</code>, and outputs <code class="font-mono text-white">the_content()</code>.
+        </p>
+        <ul class="space-y-1.5 text-sm text-earth-text list-disc pl-5 marker:text-earth-sage mb-3">
+          <li>Make sure you have at least <strong>4 published pages</strong> (e.g., Home + Belgrade + Novi Sad / Tara National Park + Travel Guide) assigned to your Primary menu.</li>
+          <li>Assign a Featured Image to at least one inner page and leave another inner page without one so you can demonstrate both branches of <code class="font-mono text-white">has_post_thumbnail()</code> in your demo video.</li>
+        </ul>
+        <div class="bg-earth-bg/90 border-l-4 border-earth-sage rounded-r-xl p-3 text-xs text-earth-muted mb-3">
+          <strong class="text-earth-sage uppercase tracking-wider">What to Check:</strong> Click through all 4+ pages in the browser and confirm each shows its own title, content, and featured image behavior.
+        </div>
+        <textarea data-note-id="note-a2-4" rows="2" placeholder="Which pages have featured images vs. no featured image?"
+          class="step-note w-full rounded-xl bg-earth-bg border border-earth-border px-3.5 py-2 text-xs text-earth-text placeholder:text-earth-muted/60 focus:outline-none focus:border-earth-sage"></textarea>
+      </article>
+
+      <!-- STEP A2-5: Two-Phase Footer & ai-dev-log.md -->
+      <article class="step-card bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-7 shadow-md transition" data-step="a2-5">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <span class="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-earth-terracotta mb-1">
+              Assignment 2 Fix #5 &bull; footer-phase1.php, footer.php &amp; ai-dev-log.md
+            </span>
+            <h3 class="step-title text-lg sm:text-xl font-bold text-white">
+              5. Save <code>footer-phase1.php</code> &amp; Complete <code>ai-dev-log.md</code> Entries
+            </h3>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer select-none bg-earth-bg px-3 py-1.5 rounded-lg border border-earth-border hover:border-earth-sage">
+            <input type="checkbox" class="step-checkbox sync-check" data-check-id="chk-a2-5" />
+            <span class="text-xs font-semibold text-earth-text">Done</span>
+          </label>
+        </div>
+        <p class="text-sm text-earth-muted mb-3">
+          Your uploaded <code class="font-mono text-earth-sage">footer.php</code> already uses <code class="font-mono text-white">wp_nav_menu()</code> for <code class="font-mono text-white">footer-one</code>, <code class="font-mono text-white">footer-two</code>, and <code class="font-mono text-white">footer-three</code> (the refactored Phase 2 pattern). To satisfy the two-phase documentation requirement:
+        </p>
+        <ul class="space-y-1.5 text-sm text-earth-text list-disc pl-5 marker:text-earth-sage mb-3">
+          <li>Create <code class="font-mono text-earth-sage">footer-phase1.php</code> in <code class="font-mono text-earth-muted">cms2-project/</code> with 3 Serbia link arrays, 3 <code class="font-mono text-white">foreach</code> loops, and an HTML comment above each column explaining its purpose (starter available in the Snippets tab).</li>
+          <li>In <code class="font-mono text-earth-sage">ai-dev-log.md</code>, ensure you have <strong>at least 4 entries (50–100 words each)</strong>, including one entry where AI output was wrong/needed major changes (and how you spotted it) and one entry built <strong>100% without AI</strong>, plus your new Final Project 1 entries (including the Header Widget AI critique).</li>
+        </ul>
+        <div class="bg-earth-bg/90 border-l-4 border-earth-sage rounded-r-xl p-3 text-xs text-earth-muted mb-3">
+          <strong class="text-earth-sage uppercase tracking-wider">What to Check:</strong> Verify both <code class="font-mono text-white">footer-phase1.php</code> and <code class="font-mono text-white">ai-dev-log.md</code> exist inside <code class="font-mono text-earth-sage">cms2-project/</code>, and check word counts (50–100 words per entry).
+        </div>
+        <textarea data-note-id="note-a2-5" rows="2" placeholder="Notes on footer-phase1.php and ai-dev-log.md entries..."
+          class="step-note w-full rounded-xl bg-earth-bg border border-earth-border px-3.5 py-2 text-xs text-earth-text placeholder:text-earth-muted/60 focus:outline-none focus:border-earth-sage"></textarea>
+      </article>
+
+      <!-- STEP FP1-BRIDGE: How Assignment 2 Feeds Into Final Project 1 -->
+      <article class="step-card bg-earth-card border border-earth-sage/50 rounded-2xl p-5 sm:p-7 shadow-md transition" data-step="fp1-bridge">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <span class="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-earth-sage mb-1">
+              Bridge to Final Project 1 &bull; Due Nov 27, 2026 @ 3:00 PM
+            </span>
+            <h3 class="step-title text-lg sm:text-xl font-bold text-white">
+              6. Final Project 1 Checklist Bridge (What You Add Next on Top of A2)
+            </h3>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer select-none bg-earth-bg px-3 py-1.5 rounded-lg border border-earth-border hover:border-earth-sage">
+            <input type="checkbox" class="step-checkbox sync-check" data-check-id="chk-fp1-bridge" />
+            <span class="text-xs font-semibold text-earth-text">Done</span>
+          </label>
+        </div>
+        <p class="text-sm text-earth-muted mb-3">
+          Once those Assignment 2 foundations are solid, your uploaded Serbia theme already loads Bootstrap 5.3.8, Lora font, and Bootstrap Icons in <code class="font-mono text-earth-sage">functions.php</code>, calls <code class="font-mono text-earth-sage">get_template_part('template-parts/hero')</code> and <code class="font-mono text-earth-sage">get_template_part('template-parts/testimonials')</code> in <code class="font-mono text-earth-sage">front-page.php</code>, and registers <code class="font-mono text-white">header-area</code> + <code class="font-mono text-white">footer-one/two/three</code>. Complete these Final Project 1 items:
+        </p>
+        <ul class="space-y-1.5 text-sm text-earth-text list-disc pl-5 marker:text-earth-sage mb-3">
+          <li><strong>Font comment in <code>functions.php</code>:</strong> Add a comment above your Google Font enqueue stating which font you chose, why it fits Serbia's visual identity, and how it's loaded.</li>
+          <li><strong>4+ Social media icons in <code>header.php</code>:</strong> Replace/expand the 2 reference links with at least <strong>4 social media links</strong> using font icons + accessible <code class="font-mono text-white">aria-label</code>s.</li>
+          <li><strong>"Header" widget area + AI critique:</strong> Confirm <code class="font-mono text-white">'name' =&gt; 'Header'</code> is registered, renders at the very top of <code class="font-mono text-white">&lt;header&gt;</code> via <code class="font-mono text-white">is_active_sidebar()</code> + <code class="font-mono text-white">dynamic_sidebar()</code>, and document your AI prompt, what AI generated, what was outdated/wrong, and what you changed in <code class="font-mono text-earth-sage">ai-dev-log.md</code>.</li>
+          <li><strong>3+ Dynamic testimonials:</strong> In <code class="font-mono text-earth-sage">template-parts/testimonials.php</code>, ensure an array of arrays has <strong>at least 3</strong> testimonials looped with <code class="font-mono text-white">foreach</code>.</li>
+          <li><strong>6 Styled Bootstrap cards:</strong> Expand <code class="font-mono text-white">$cards</code> in <code class="font-mono text-earth-sage">front-page.php</code> (or <code class="font-mono text-earth-sage">template-parts/cards.php</code>) to <strong>6 cards</strong> and style them with your Serbia palette (<code class="font-mono text-white">#0C4076</code> / <code class="font-mono text-white">#C6363C</code> / <code class="font-mono text-white">#e5efec</code>).</li>
+          <li><strong>2 Custom template parts with (a), (b), (c) comments:</strong> Ensure both template parts include clear comments answering <em>(a) what it contains</em>, <em>(b) why extracted</em>, and <em>(c) where called from</em>.</li>
+          <li><strong>3 Footer menus &amp; log:</strong> Assign 3 menus in WP Admin to <code class="font-mono text-white">footer-one</code>, <code class="font-mono text-white">footer-two</code>, and <code class="font-mono text-white">footer-three</code>, and add 4+ new Final Project 1 entries (50–100 words each) to <code class="font-mono text-earth-sage">ai-dev-log.md</code>.</li>
+        </ul>
+        <div class="bg-earth-bg/90 border-l-4 border-earth-sage rounded-r-xl p-3 text-xs text-earth-muted mb-3">
+          <strong class="text-earth-sage uppercase tracking-wider">Submission Reminder:</strong> Submit 1 <strong>.ZIP</strong> file (not .rar) containing <code class="font-mono text-white">cms2-project</code>, updated <code class="font-mono text-earth-sage">ai-dev-log.md</code>, all assets, and colour palette screenshot—plus include your <strong>site URL</strong> and <strong>video presentation URL</strong> in the Brightspace submission comment.
+        </div>
+        <textarea data-note-id="note-fp1-bridge" rows="2" placeholder="Final Project 1 items left to finish before uploading .ZIP & video URL..."
+          class="step-note w-full rounded-xl bg-earth-bg border border-earth-border px-3.5 py-2 text-xs text-earth-text placeholder:text-earth-muted/60 focus:outline-none focus:border-earth-sage"></textarea>
+      </article>
+    </section>
+
+    <!-- ==================== TAB 2: INTERACTIVE CHECKLIST ==================== -->
+    <section id="panel-checklist" class="hidden space-y-6">
+      <div class="bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-7 shadow-md">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-earth-border">
+          <div>
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-earth-sage">Persistent Checklist</span>
+            <h2 class="text-lg sm:text-xl font-bold text-white">Assignment 2 Gaps + Final Project 1 Checklist</h2>
+          </div>
+          <span id="checklist-badge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-earth-bg border border-earth-sage text-earth-sage">
+            0 / 15
+          </span>
+        </div>
+
+        <p class="text-xs text-earth-muted mb-5">
+          Checkboxes stay synced with the Follow-Along tab and save automatically in your browser.
+        </p>
+
+        <!-- Group 1: Assignment 2 Foundation Fixes -->
+        <div class="mb-6">
+          <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-earth-terracotta mb-3">1. Assignment 2 Foundation Fixes (Needed for Final Project 1)</h3>
+          <div class="space-y-2.5">
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-a2-1" />
+              <span class="text-sm text-earth-text">Theme folder named <code class="font-mono text-earth-sage">cms2-project</code>, <code class="font-mono text-earth-sage">style.css</code> sets <code class="font-mono text-white">Theme Name: CMS II Project</code> and <code class="font-mono text-white">Author: Sneza M Drouin</code>, with backup copy kept safe.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-a2-2" />
+              <span class="text-sm text-earth-text">All 6 PHP files (<code class="font-mono text-earth-sage">index.php</code>, <code class="font-mono text-earth-sage">page.php</code>, <code class="font-mono text-earth-sage">footer.php</code>, <code class="font-mono text-earth-sage">header.php</code>, <code class="font-mono text-earth-sage">functions.php</code>, <code class="font-mono text-earth-sage">front-page.php</code>) have top block comments answering all 3 hierarchy/connection questions.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-a2-3" />
+              <span class="text-sm text-earth-text"><code class="font-mono text-earth-sage">@media</code> breakpoints in <code class="font-mono text-earth-sage">style.css</code> have comments above them, at least <strong>5 images</strong> exist, and a <strong>colour palette screenshot</strong> is saved for the ZIP.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-a2-4" />
+              <span class="text-sm text-earth-text">At least <strong>4 pages</strong> (Home + 3 inner pages) exist with dynamic content, and <code class="font-mono text-earth-sage">page.php</code> outputs dynamic page title + <code class="font-mono text-white">has_post_thumbnail()</code> / <code class="font-mono text-white">the_post_thumbnail()</code>.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-a2-5" />
+              <span class="text-sm text-earth-text"><code class="font-mono text-earth-sage">footer-phase1.php</code> (3 manual arrays, <code class="font-mono text-white">foreach</code> loops, column comments) is saved in the theme folder alongside refactored <code class="font-mono text-earth-sage">footer.php</code> and <code class="font-mono text-earth-sage">ai-dev-log.md</code>.</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Group 2: Final Project 1 Core Requirements -->
+        <div class="mb-6">
+          <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-earth-sage mb-3">2. Final Project 1 Theme &amp; Content Requirements</h3>
+          <div class="space-y-2.5">
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-font-bs" />
+              <span class="text-sm text-earth-text">Free web font + Bootstrap enqueued via <code class="font-mono text-earth-sage">wp_enqueue_style()</code> in <code class="font-mono text-earth-sage">functions.php</code> with comment above font enqueue explaining font choice, fit for destination, and loading method.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-social" />
+              <span class="text-sm text-earth-text">Header contains <strong>4+ social media icons</strong> from a font icon library with accessible names (<code class="font-mono text-earth-sage">aria-label</code>) linking to social accounts.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-widget" />
+              <span class="text-sm text-earth-text">Widget area named <strong>"Header"</strong> registered with <code class="font-mono text-earth-sage">register_sidebar()</code>, displayed at topmost part of <code class="font-mono text-earth-sage">header.php</code> using <code class="font-mono text-white">is_active_sidebar()</code> + <code class="font-mono text-white">dynamic_sidebar()</code>, and AI critique documented.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-testimonials" />
+              <span class="text-sm text-earth-text"><strong>3+ dynamic testimonials</strong> stored in a PHP array / array of arrays and looped with <code class="font-mono text-earth-sage">foreach</code>.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-cards" />
+              <span class="text-sm text-earth-text">Section with <strong>6 Bootstrap cards</strong> restyled to fit the Serbia destination palette.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-parts" />
+              <span class="text-sm text-earth-text"><strong>2 custom template parts</strong> (hero banner + 1 other section), each with comments answering <strong>(a)</strong> what it contains, <strong>(b)</strong> why extracted, and <strong>(c)</strong> where called from.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-footer-menus" />
+              <span class="text-sm text-earth-text"><strong>3 footer navigation menus</strong> registered in <code class="font-mono text-earth-sage">functions.php</code>, assigned in WP Admin, and displayed via <code class="font-mono text-earth-sage">wp_nav_menu()</code> in <code class="font-mono text-earth-sage">footer.php</code>.</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Group 3: AI Log, ZIP & Brightspace Submission -->
+        <div>
+          <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-earth-terracotta mb-3">3. AI Log, ZIP Archive &amp; Brightspace Submission</h3>
+          <div class="space-y-2.5">
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-log" />
+              <span class="text-sm text-earth-text"><code class="font-mono text-earth-sage">ai-dev-log.md</code> has <strong>4+ new Final Project 1 entries (50–100 words each)</strong>, including the Header widget AI critique and at least one feature built <strong>100% without AI</strong>.</span>
+            </label>
+            <label class="flex items-start gap-3 p-3 rounded-xl bg-earth-bg/75 hover:bg-earth-cardHover border border-earth-border/70 cursor-pointer transition">
+              <input type="checkbox" class="step-checkbox sync-check mt-0.5" data-check-id="chk-fp1-bridge" />
+              <span class="text-sm text-earth-text">Verified clean <strong>.ZIP</strong> (not .rar) extraction, included all assets + palette screenshot, and added <strong>site URL + video URL</strong> in the Brightspace submission comment.</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: QUICK CODE & LOG SNIPPETS ==================== -->
+    <section id="panel-snippets" class="hidden space-y-6">
+      <div class="bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-6 shadow-md">
+        <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Ready-to-Adapt Snippets for Your Serbia Theme</h2>
+        <p class="text-sm text-earth-muted">
+          Copy any block below into VS Code and adjust wording so it matches your exact theme logic and voice.
+        </p>
+      </div>
+
+      <!-- Snippet 1: 3-Question Docblock Templates for All 6 PHP Files -->
+      <div class="bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-6 shadow-md">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <h3 class="text-base font-bold text-white">A. 3-Question Top Comment Templates for All 6 PHP Files</h3>
+          <button type="button" onclick="copyCode('snip-six-headers', this)" class="px-3 py-1 text-xs font-mono font-medium rounded bg-earth-slate text-white hover:bg-earth-sage hover:text-earth-bg transition">
+            Copy All 6
+          </button>
+        </div>
+        <div class="rounded-xl overflow-hidden border border-earth-border bg-earth-codeBg">
+          <pre class="p-4 overflow-x-auto text-earth-text"><code id="snip-six-headers">/* --- 1. functions.php ---
+ * 1. Hierarchy role: Not a rendering template; loaded automatically by WordPress on every request before templates run.
+ * 2. Why separate: Keeps theme supports, asset enqueuing, menus, and widget registration organized in one central setup file.
+ * 3. Connections: Supplies styles/scripts for header.php and templates, and registers menus/widgets used by header.php and footer.php.
+ */
+
+/* --- 2. header.php ---
+ * 1. Hierarchy role: Shared top-of-document and site header partial included across page templates.
+ * 2. Why separate: Avoids duplicating &lt;!doctype html&gt;, &lt;head&gt;, wp_head(), social links, header widgets, and primary nav across templates.
+ * 3. Connections: Called at the top of front-page.php, page.php, and index.php via get_header(); pairs with footer.php.
+ */
+
+/* --- 3. front-page.php ---
+ * 1. Hierarchy role: High-priority template in the WordPress hierarchy for the static Front Page (or site front when set).
+ * 2. Why separate: Lets the home page showcase a custom hero, testimonials, and 6 cards without cluttering ordinary inner pages.
+ * 3. Connections: Calls get_header(), runs the WordPress Loop, loads custom template parts via get_template_part(), and calls get_footer().
+ */
+
+/* --- 4. page.php ---
+ * 1. Hierarchy role: Template used for singular WordPress 'page' posts (such as inner Serbia destination pages).
+ * 2. Why separate: Gives standard pages a consistent title banner, conditional featured image check, and page content layout.
+ * 3. Connections: Calls get_header(), loops through the current page post with have_posts()/the_post()/the_content(), and calls get_footer().
+ */
+
+/* --- 5. index.php ---
+ * 1. Hierarchy role: Ultimate fallback template at the bottom of the WordPress template hierarchy when no more specific template matches.
+ * 2. Why separate: Guarantees WordPress always has a valid fallback template to render posts/archives safely.
+ * 3. Connections: Calls get_header(), runs a fallback Loop with the_permalink(), the_title(), and the_excerpt(), and calls get_footer().
+ */
+
+/* --- 6. footer.php ---
+ * 1. Hierarchy role: Shared bottom-of-page and closing HTML document partial included by templates.
+ * 2. Why separate: Centralizes the 3 footer navigation menu columns, copyright line, and wp_footer() hook in one place.
+ * 3. Connections: Called at the bottom of front-page.php, page.php, and index.php via get_footer(), closing tags opened in header.php.
+ */</code></pre>
+        </div>
+      </div>
+
+      <!-- Snippet 2: footer-phase1.php Starter -->
+      <div class="bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-6 shadow-md">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <h3 class="text-base font-bold text-white">B. Manual Footer Documentation File (<code>cms2-project/footer-phase1.php</code>)</h3>
+          <button type="button" onclick="copyCode('snip-footer-p1', this)" class="px-3 py-1 text-xs font-mono font-medium rounded bg-earth-slate text-white hover:bg-earth-sage hover:text-earth-bg transition">
+            Copy File
+          </button>
+        </div>
+        <div class="rounded-xl overflow-hidden border border-earth-border bg-earth-codeBg">
+          <pre class="p-4 overflow-x-auto text-earth-text"><code id="snip-footer-p1">&lt;?php
+/**
+ * Phase 1 Manual Footer (Assignment 2 Documentation Only).
+ * Uses 3 PHP arrays and 3 foreach loops before refactoring to WordPress menus.
+ */
+$attractions_links = [
+    ['label' =&gt; 'Belgrade Fortress', 'url' =&gt; '/belgrade/'],
+    ['label' =&gt; 'Tara National Park', 'url' =&gt; '/tara/'],
+];
+$dining_links = [
+    ['label' =&gt; 'Skadarlija Taverns', 'url' =&gt; '/dining/'],
+    ['label' =&gt; 'Local Bakeries', 'url' =&gt; '/food/'],
+];
+$travel_links = [
+    ['label' =&gt; 'Getting Around Serbia', 'url' =&gt; '/travel/'],
+    ['label' =&gt; 'Visitor Tips', 'url' =&gt; '/tips/'],
+];
+?&gt;
+&lt;footer class="site-footer"&gt;
+    &lt;div class="footer-columns"&gt;
+        &lt;!-- Column 1: Highlights key places and landmarks to visit in Serbia --&gt;
+        &lt;div&gt;
+            &lt;h2&gt;Local Attractions&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;?php foreach ($attractions_links as $item) : ?&gt;
+                    &lt;li&gt;&lt;a href="&lt;?php echo esc_url(home_url($item['url'])); ?&gt;"&gt;&lt;?php echo esc_html($item['label']); ?&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;?php endforeach; ?&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Column 2: Shares traditional restaurants and food experiences --&gt;
+        &lt;div&gt;
+            &lt;h2&gt;Restaurants &amp; Food&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;?php foreach ($dining_links as $item) : ?&gt;
+                    &lt;li&gt;&lt;a href="&lt;?php echo esc_url(home_url($item['url'])); ?&gt;"&gt;&lt;?php echo esc_html($item['label']); ?&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;?php endforeach; ?&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Column 3: Provides practical trip planning and travel links --&gt;
+        &lt;div&gt;
+            &lt;h2&gt;Travel Resources&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;?php foreach ($travel_links as $item) : ?&gt;
+                    &lt;li&gt;&lt;a href="&lt;?php echo esc_url(home_url($item['url'])); ?&gt;"&gt;&lt;?php echo esc_html($item['label']); ?&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;?php endforeach; ?&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/footer&gt;
+&lt;?php wp_footer(); ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
+      </div>
+
+      <!-- Snippet 3: ai-dev-log.md Template -->
+      <div class="bg-earth-card border border-earth-border rounded-2xl p-5 sm:p-6 shadow-md">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <h3 class="text-base font-bold text-white">C. <code>ai-dev-log.md</code> Entry Template (50–100 Words Per Entry)</h3>
+          <button type="button" onclick="copyCode('snip-dev-log', this)" class="px-3 py-1 text-xs font-mono font-medium rounded bg-earth-slate text-white hover:bg-earth-sage hover:text-earth-bg transition">
+            Copy Markdown
+          </button>
+        </div>
+        <div class="rounded-xl overflow-hidden border border-earth-border bg-earth-codeBg">
+          <pre class="p-4 overflow-x-auto text-earth-text"><code id="snip-dev-log">| Section | Prompt Used | What AI Generated | What You Changed &amp; Why | What You Wrote Yourself |
+| :--- | :--- | :--- | :--- | :--- |
+| Header Widget Area (Critique) | "Generate WordPress PHP code to register a widget area named Header and show it at the top of header.php." | Returned a `register_sidebar()` callback and echoed `dynamic_sidebar()` directly in `header.php` without checking if widgets were active. | Added `if (is_active_sidebar('header-area'))` around the wrapper in `header.php` so empty containers never render, and refined `before_widget`/`after_widget` to semantic `&lt;section&gt;` tags with `%1$s` and `%2$s`. | Wrote the `widgets_init` hook, verified `'name' =&gt; 'Header'` in WP Admin under Appearance &rarr; Widgets, and tested adding/removing blocks. |
+| Three Footer Navigation Menus | Did not use AI | Not applicable — built without AI using WordPress `register_nav_menus()` and `wp_nav_menu()` reference docs plus class notes. | Kept the three column topics from my Serbia destination plan while replacing static manual arrays with three WordPress-managed menu locations. | Registered `footer-one`, `footer-two`, and `footer-three` in `functions.php`, rendered each with `wp_nav_menu()` in `footer.php`, and assigned menus in WP Admin. |
+| Dynamic Testimonials &amp; Loop | "Create a PHP array of 3 testimonials with visitor name and quote for a travel theme." | Produced a 3-item associative array and basic list markup without escaping functions or responsive grid classes. | Formatted the output with `esc_html()` escaping and Bootstrap responsive columns inside `template-parts/testimonials.php`, adding the required a/b/c template part comment. | Wrote all Serbia visitor testimonials, verified three items render cleanly, and connected the part to `front-page.php`. |
+| Six Styled Bootstrap Cards | "Write 6 Bootstrap cards in a responsive grid for a destination homepage." | Generated 6 `.card` elements inside Bootstrap `.row` and `.col-md-4` columns using default Bootstrap styling. | Restyled borders, badges, and buttons in `style.css` using my Serbia palette (`#0C4076`, `#C6363C`, `#e5efec`) and added responsive column classes for mobile, tablet, and desktop. | Authored the six Serbia destination card titles, descriptions, and links, and checked layout across viewports. |</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-earth-border py-6 text-center text-xs text-earth-muted">
+    <div class="max-w-5xl mx-auto px-4">
+      Prepared for <strong>Sneza M Drouin</strong> &bull; 26F_MTM6303_010 Algonquin College &bull; Progress &amp; notes saved automatically in <code class="font-mono text-earth-sage">localStorage</code>.
+    </div>
+  </footer>
+
+  <script>
+    const CHECK_STORAGE_KEY = 'mtm6303_sneza_a2_fp1_checks_v1';
+    const NOTE_STORAGE_KEY = 'mtm6303_sneza_a2_fp1_notes_v1';
+    const TAB_STORAGE_KEY = 'mtm6303_sneza_a2_fp1_tab_v1';
+
+    const ALL_CHECK_IDS = [
+      'chk-a2-1',
+      'chk-a2-2',
+      'chk-a2-3',
+      'chk-a2-4',
+      'chk-a2-5',
+      'chk-fp1-bridge',
+      'chk-fp1-font-bs',
+      'chk-fp1-social',
+      'chk-fp1-widget',
+      'chk-fp1-testimonials',
+      'chk-fp1-cards',
+      'chk-fp1-parts',
+      'chk-fp1-footer-menus',
+      'chk-fp1-log'
+    ];
+
+    function safeGetJSON(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function safeSetJSON(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {}
+    }
+
+    function syncCheckboxesAndCards() {
+      const checks = safeGetJSON(CHECK_STORAGE_KEY);
+
+      document.querySelectorAll('.sync-check').forEach(cb => {
+        const id = cb.getAttribute('data-check-id');
+        cb.checked = Boolean(checks[id]);
+      });
+
+      document.querySelectorAll('.step-card').forEach(card => {
+        const cb = card.querySelector('.sync-check');
+        if (cb && cb.checked) {
+          card.classList.add('is-complete');
+        } else {
+          card.classList.remove('is-complete');
+        }
+      });
+
+      const total = ALL_CHECK_IDS.length;
+      const done = ALL_CHECK_IDS.filter(id => Boolean(checks[id])).length;
+      const pct = Math.round((done / total) * 100);
+
+      document.getElementById('progress-count').textContent = `${done} / ${total} checks completed (${pct}%)`;
+      document.getElementById('checklist-badge').textContent = `${done} / ${total}`;
+      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+    }
+
+    function loadSavedNotes() {
+      const notes = safeGetJSON(NOTE_STORAGE_KEY);
+      document.querySelectorAll('.step-note').forEach(textarea => {
+        const noteId = textarea.getAttribute('data-note-id');
+        if (notes[noteId]) {
+          textarea.value = notes[noteId];
+        }
+      });
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target.classList.contains('sync-check')) {
+        const id = e.target.getAttribute('data-check-id');
+        const checks = safeGetJSON(CHECK_STORAGE_KEY);
+        checks[id] = e.target.checked;
+        safeSetJSON(CHECK_STORAGE_KEY, checks);
+        syncCheckboxesAndCards();
+      }
+    });
+
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('step-note')) {
+        const noteId = e.target.getAttribute('data-note-id');
+        const notes = safeGetJSON(NOTE_STORAGE_KEY);
+        notes[noteId] = e.target.value;
+        safeSetJSON(NOTE_STORAGE_KEY, notes);
+      }
+    });
+
+    function switchTab(tabName) {
+      const panels = {
+        follow: document.getElementById('panel-follow'),
+        checklist: document.getElementById('panel-checklist'),
+        snippets: document.getElementById('panel-snippets')
+      };
+      const buttons = {
+        follow: document.getElementById('tab-follow'),
+        checklist: document.getElementById('tab-checklist'),
+        snippets: document.getElementById('tab-snippets')
+      };
+
+      const activeCls = ['bg-earth-sage', 'text-earth-bg', 'shadow'];
+      const inactiveCls = ['bg-earth-card', 'text-earth-text', 'border', 'border-earth-border', 'hover:border-earth-sage'];
+
+      Object.keys(panels).forEach(key => {
+        if (key === tabName) {
+          panels[key].classList.remove('hidden');
+          buttons[key].classList.remove(...inactiveCls);
+          buttons[key].classList.add(...activeCls);
+        } else {
+          panels[key].classList.add('hidden');
+          buttons[key].classList.remove(...activeCls);
+          buttons[key].classList.add(...inactiveCls);
+        }
+      });
+
+      try {
+        localStorage.setItem(TAB_STORAGE_KEY, tabName);
+      } catch (e) {}
+    }
+
+    function copyCode(elementId, btnEl) {
+      const codeEl = document.getElementById(elementId);
+      if (!codeEl) return;
+
+      const textarea = document.createElement('textarea');
+      textarea.value = codeEl.innerText;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        document.execCommand('copy');
+        const prev = btnEl.textContent;
+        btnEl.textContent = 'Copied!';
+        btnEl.classList.add('bg-earth-sage', 'text-earth-bg');
+        showToast('Copied to clipboard!');
+        setTimeout(() => {
+          btnEl.textContent = prev;
+          btnEl.classList.remove('bg-earth-sage', 'text-earth-bg');
+        }, 1700);
+      } catch (e) {
+        showToast('Select text and press Ctrl+C / Cmd+C.');
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    let toastTimer;
+    function showToast(message) {
+      const banner = document.getElementById('toast-banner');
+      const text = document.getElementById('toast-text');
+      text.textContent = message;
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+        banner.classList.remove('flex');
+      }, 2300);
+    }
+
+    document.getElementById('reset-progress-btn').addEventListener('click', () => {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    function closeResetModal() {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmResetProgress() {
+      safeSetJSON(CHECK_STORAGE_KEY, {});
+      safeSetJSON(NOTE_STORAGE_KEY, {});
+      document.querySelectorAll('.step-note').forEach(el => el.value = '');
+      syncCheckboxesAndCards();
+      closeResetModal();
+      showToast('Checks and notes reset.');
+    }
+
+    function updateCountdown() {
+      const deadline = new Date('2026-11-27T15:00:00-05:00').getTime();
+      const diff = deadline - Date.now();
+      const timerEl = document.getElementById('countdown-timer');
+
+      if (diff <= 0) {
+        timerEl.textContent = 'Deadline window reached — submit ASAP if open';
+        return;
+      }
+
+      const h = Math.floor(diff / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+      timerEl.textContent = `${h}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s remaining`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedNotes();
+      syncCheckboxesAndCards();
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      try {
+        const savedTab = localStorage.getItem(TAB_STORAGE_KEY);
+        if (savedTab && ['follow', 'checklist', 'snippets'].includes(savedTab)) {
+          switchTab(savedTab);
+        }
+      } catch (e) {}
+    });
+  </script>
+</body>
+</html>
