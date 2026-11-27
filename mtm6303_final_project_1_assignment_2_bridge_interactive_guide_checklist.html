@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTM6303 Final Project 1 &amp; Assignment 2 Bridge — Interactive Guide &amp; Checklist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page: #0f131a;
+      --bg-surface: #161c26;
+      --bg-card: #1c2432;
+      --bg-card-hover: #222c3d;
+      --bg-code: #0b0e14;
+      --border: #2c374b;
+      --border-strong: #3d4d68;
+      --text-main: #eef2f7;
+      --text-muted: #9aa7bd;
+      --serbia-blue: #0C4076;
+      --serbia-blue-bright: #2e77c7;
+      --serbia-red: #C6363C;
+      --serbia-red-soft: rgba(198, 54, 60, 0.16);
+      --serbia-mint: #E5EFEC;
+      --success: #4ade80;
+      --success-bg: rgba(74, 222, 128, 0.14);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    a {
+      color: #6fb1ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Header */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(15, 19, 26, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .topbar-inner {
+      padding: 0.95rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .header-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.22rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--serbia-mint);
+    }
+
+    .badge-blue {
+      background: var(--serbia-blue);
+      border-color: var(--serbia-blue-bright);
+      color: #ffffff;
+    }
+
+    .badge-red {
+      background: var(--serbia-red-soft);
+      border-color: var(--serbia-red);
+      color: #ff9fa3;
+    }
+
+    .badge-link {
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .badge-link:hover {
+      text-decoration: none;
+      border-color: #6fb1ff;
+      transform: translateY(-1px);
+    }
+
+    h1.site-heading {
+      margin: 0;
+      font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .deadline-box {
+      background: var(--bg-card);
+      border: 1px solid var(--serbia-red);
+      border-radius: var(--radius-md);
+      padding: 0.55rem 0.85rem;
+      font-size: 0.78rem;
+      min-width: 240px;
+    }
+
+    .deadline-title {
+      font-weight: 700;
+      color: #ff8e93;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--serbia-red);
+      box-shadow: 0 0 0 0 rgba(198, 54, 60, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(198, 54, 60, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(198, 54, 60, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(198, 54, 60, 0); }
+    }
+
+    .countdown-text {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Progress & Utility Controls */
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .progress-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .progress-stats {
+      font-weight: 600;
+      color: var(--serbia-mint);
+    }
+
+    .progress-stats span {
+      color: var(--success);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .utility-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.38rem 0.72rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: #6fb1ff;
+    }
+
+    .btn-primary {
+      background: var(--serbia-blue);
+      border-color: var(--serbia-blue-bright);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #145496;
+    }
+
+    .btn-danger {
+      border-color: rgba(198, 54, 60, 0.55);
+      color: #ff9fa3;
+    }
+    .btn-danger:hover {
+      background: var(--serbia-red);
+      color: #ffffff;
+      border-color: var(--serbia-red);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--serbia-blue-bright), var(--serbia-red), var(--success));
+      transition: width 0.25s ease;
+    }
+
+    /* Tabs & Search Filter Bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 0.25rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.52rem 0.9rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .tab-btn:hover {
+      color: #ffffff;
+      border-color: var(--border-strong);
+    }
+
+    .tab-btn.active {
+      background: var(--serbia-blue);
+      border-color: var(--serbia-blue-bright);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(12, 64, 118, 0.45);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      max-width: 440px;
+      justify-content: flex-end;
+    }
+
+    .search-input {
+      width: 100%;
+      min-width: 190px;
+      background: var(--bg-code);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      border-radius: var(--radius-md);
+      padding: 0.48rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      outline: 2px solid var(--serbia-blue-bright);
+      outline-offset: 1px;
+    }
+
+    /* Main Content */
+    main {
+      padding: 1.5rem 0 3.5rem;
+    }
+
+    .view-panel {
+      display: none;
+    }
+    .view-panel.active {
+      display: block;
+    }
+
+    /* Audit Summary Banner */
+    .summary-card {
+      background: linear-gradient(135deg, rgba(12, 64, 118, 0.35), rgba(28, 36, 50, 0.95));
+      border: 1px solid var(--serbia-blue-bright);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-card h2 {
+      margin: 0 0 0.45rem;
+      font-size: 1.08rem;
+      color: #ffffff;
+    }
+
+    .summary-card p {
+      margin: 0 0 0.75rem;
+      font-size: 0.88rem;
+      color: var(--serbia-mint);
+    }
+
+    .palette-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .swatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .swatch-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    /* Phase Cards */
+    .phase-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.45rem;
+      margin-bottom: 1.35rem;
+      transition: border-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .phase-card.phase-done {
+      border-color: rgba(74, 222, 128, 0.45);
+      background: rgba(28, 36, 50, 0.72);
+    }
+
+    .phase-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .phase-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ff9fa3;
+      margin-bottom: 0.2rem;
+    }
+
+    .phase-tag.fp1 {
+      color: #7cc0ff;
+    }
+
+    .phase-title {
+      margin: 0;
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .phase-card.phase-done .phase-title {
+      text-decoration: line-through;
+      text-decoration-color: var(--success);
+      color: var(--text-muted);
+    }
+
+    .phase-desc {
+      margin: 0 0 0.9rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .task-list {
+      list-style: none;
+      margin: 0 0 1rem;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .task-item:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+    }
+
+    .task-item.checked {
+      border-color: rgba(74, 222, 128, 0.35);
+      background: rgba(22, 28, 38, 0.6);
+    }
+
+    .task-item input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-top: 0.12rem;
+      border-radius: 5px;
+      border: 2px solid var(--serbia-blue-bright);
+      background: var(--bg-code);
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .task-item input[type="checkbox"]:checked {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .task-item input[type="checkbox"]:checked::after {
+      content: "✓";
+      color: #0b0e14;
+      font-weight: 800;
+      font-size: 0.82rem;
+      line-height: 1;
+    }
+
+    .task-text {
+      font-size: 0.86rem;
+      color: var(--text-main);
+      flex: 1;
+    }
+
+    .task-item.checked .task-text {
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .task-text code {
+      background: var(--bg-code);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: var(--serbia-mint);
+      border: 1px solid var(--border);
+    }
+
+    .verify-box {
+      background: rgba(12, 64, 118, 0.22);
+      border-left: 4px solid var(--serbia-blue-bright);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.82rem;
+      color: var(--serbia-mint);
+      margin-bottom: 0.85rem;
+    }
+
+    .verify-box strong {
+      color: #8cc8ff;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      letter-spacing: 0.04em;
+    }
+
+    .note-box label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .note-textarea {
+      width: 100%;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.82rem;
+      padding: 0.55rem 0.75rem;
+      resize: vertical;
+      min-height: 54px;
+    }
+
+    .note-textarea:focus {
+      outline: 2px solid var(--serbia-blue-bright);
+      outline-offset: 1px;
+    }
+
+    /* Code Blocks */
+    .snippet-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 1.35rem;
+    }
+
+    .snippet-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .snippet-title {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .snippet-file {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: #8cc8ff;
+    }
+
+    pre.code-block {
+      margin: 0;
+      padding: 1rem;
+      background: var(--bg-code);
+      color: #e2e8f0;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      overflow-x: auto;
+    }
+
+    /* Master Checklist Filter Pills */
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+
+    .pill-btn {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .pill-btn.active {
+      background: var(--serbia-red);
+      border-color: var(--serbia-red);
+      color: #ffffff;
+    }
+
+    /* Modal & Toast */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(5, 8, 13, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      padding: 1.4rem;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+    }
+
+    .modal-card h3 {
+      margin: 0 0 0.5rem;
+      color: #ffffff;
+      font-size: 1.05rem;
+    }
+
+    .modal-card p {
+      margin: 0 0 0.9rem;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 70;
+      background: var(--bg-card);
+      border: 1px solid var(--success);
+      color: #ffffff;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    footer.page-footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      .deadline-box {
+        width: 100%;
+      }
+      .filter-group {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Header -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="header-row">
+        <div>
+          <div class="badges">
+            <span class="badge badge-blue">26F_MTM6303_010 &bull; Algonquin College</span>
+            <span class="badge">Sneza M Drouin (<code>mysticstorms</code>)</span>
+            <a class="badge badge-link" href="https://github.com/mysticstorms/final-checklist-26F" target="_blank" rel="noopener noreferrer">
+              GitHub Repo ↗
+            </a>
+            <a class="badge badge-link" href="https://mysticstorms.github.io/final-checklist-26F/" target="_blank" rel="noopener noreferrer">
+              Live GitHub Page ↗
+            </a>
+          </div>
+          <h1 class="site-heading">MTM6303 Final Project 1 &amp; Assignment 2 Bridge — Interactive Guide &amp; Checklist</h1>
+        </div>
+
+        <div class="deadline-box">
+          <div class="deadline-title">
+            <span class="pulse-dot"></span>
+            <span>Final Project 1 Due: Nov 27, 2026 @ 3:00 PM</span>
+          </div>
+          <div id="countdown-display" class="countdown-text">Calculating time left...</div>
+        </div>
+      </div>
+
+      <!-- Progress Bar & Backup Controls -->
+      <div class="progress-section">
+        <div class="progress-meta">
+          <div class="progress-stats">
+            Overall Readiness: <span id="progress-label">0 / 0 completed (0%)</span>
+          </div>
+          <div class="utility-btns">
+            <button type="button" class="btn" onclick="openBackupModal()">Export / Import JSON</button>
+            <button type="button" class="btn btn-danger" onclick="openResetModal()">Reset Progress</button>
+          </div>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar-aria">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- View Tabs & Search -->
+      <div class="controls-bar">
+        <nav class="tabs" aria-label="Guide Views">
+          <button type="button" class="tab-btn active" data-view="follow" onclick="switchView('follow')">
+            1. Follow-Along Steps
+          </button>
+          <button type="button" class="tab-btn" data-view="checklist" onclick="switchView('checklist')">
+            2. Master Checklist
+          </button>
+          <button type="button" class="tab-btn" data-view="snippets" onclick="switchView('snippets')">
+            3. Quick Code &amp; AI Dev Log Snippets
+          </button>
+        </nav>
+
+        <div class="filter-group">
+          <input type="search" id="step-search" class="search-input" placeholder="Filter steps, files (e.g. header.php, widget, cards)..." oninput="applyFilters()" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Serbia Theme Audit Banner -->
+    <section class="summary-card" aria-label="Serbia Theme Audit">
+      <h2>Serbia Destination Theme Audit (<code>cms2-project</code> / <code>CMS II Project</code>)</h2>
+      <p>
+        Your uploaded Serbia files already have strong foundations: Bootstrap 5.3.8 + Lora + Bootstrap Icons in <code>functions.php</code>, dynamic page title &amp; <code>has_post_thumbnail()</code> in <code>page.php</code>, <code>front-page.php</code> calling <code>template-parts/hero</code> and <code>template-parts/testimonials</code>, <code>header-area</code> widget rendering, 3 footer menu locations, and <code>screenshot.jpeg</code>. Follow Phases 0–6 below to patch the remaining Assignment 2 requirements and finish every Final Project 1 deliverable cleanly.
+      </p>
+      <div class="palette-swatches">
+        <span class="swatch"><span class="swatch-dot" style="background:#0C4076;"></span>--ink: #0C4076</span>
+        <span class="swatch"><span class="swatch-dot" style="background:#C6363C;"></span>--brand: #C6363C</span>
+        <span class="swatch"><span class="swatch-dot" style="background:#ffffff;"></span>--paper: #ffffff</span>
+        <span class="swatch"><span class="swatch-dot" style="background:#e5efec;"></span>--soft: #e5efec</span>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 1: FOLLOW-ALONG STEPS ==================== -->
+    <section id="view-follow" class="view-panel active">
+      <div id="phases-container"></div>
+    </section>
+
+    <!-- ==================== VIEW 2: MASTER CHECKLIST ==================== -->
+    <section id="view-checklist" class="view-panel">
+      <div class="filter-pills">
+        <button type="button" class="pill-btn active" data-filter="all" onclick="setChecklistFilter('all')">All Items</button>
+        <button type="button" class="pill-btn" data-filter="unchecked" onclick="setChecklistFilter('unchecked')">Remaining Only</button>
+        <button type="button" class="pill-btn" data-filter="checked" onclick="setChecklistFilter('checked')">Completed Only</button>
+        <button type="button" class="pill-btn" data-filter="a2" onclick="setChecklistFilter('a2')">Assignment 2 Gaps</button>
+        <button type="button" class="pill-btn" data-filter="fp1" onclick="setChecklistFilter('fp1')">Final Project 1</button>
+      </div>
+      <div id="master-checklist-container"></div>
+    </section>
+
+    <!-- ==================== VIEW 3: QUICK CODE & AI LOG SNIPPETS ==================== -->
+    <section id="view-snippets" class="view-panel">
+      <div id="snippets-container"></div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    Hosted for <strong>Sneza M Drouin</strong> (<code>mysticstorms</code>) &bull; Ready for <code>https://mysticstorms.github.io/final-checklist-26F/</code> &bull; Progress saved automatically in browser <code>localStorage</code>.
+  </footer>
+
+  <!-- Backup Export / Import Modal -->
+  <div id="backup-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="backup-modal-title">
+    <div class="modal-card">
+      <h3 id="backup-modal-title">Export / Import Checklist &amp; Notes JSON</h3>
+      <p>Copy this JSON to back up your progress or move it between your laptop and lab computer, or paste saved JSON below and click Import.</p>
+      <textarea id="backup-json-area" class="note-textarea" rows="8" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeModal('backup-modal')">Close</button>
+        <button type="button" class="btn" onclick="copyBackupJson()">Copy JSON</button>
+        <button type="button" class="btn btn-primary" onclick="importBackupJson()">Import JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="reset-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
+    <div class="modal-card">
+      <h3 id="reset-modal-title">Reset All Checkboxes &amp; Notes?</h3>
+      <p>This will clear all saved progress and personal notes for <code>mysticstorms_mtm6303_26f</code> in this browser. Your WordPress theme files and GitHub repo are unaffected.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeModal('reset-modal')">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="confirmReset()">Yes, Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Banner -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span style="color:var(--success);">&#10003;</span>
+    <span id="toast-msg">Saved!</span>
+  </div>
+
+  <script>
+    const STORAGE_CHECKS = 'mysticstorms_mtm6303_26f_checklist_v1';
+    const STORAGE_NOTES  = 'mysticstorms_mtm6303_26f_notes_v1';
+    const STORAGE_VIEW   = 'mysticstorms_mtm6303_26f_view_v1';
+
+    const PHASES = [
+      {
+        id: 'phase-0',
+        category: 'a2',
+        tag: 'Phase 0 • Assignment 2 Foundation',
+        title: 'Backup, Folder Name (cms2-project), Theme Header & Palette Screenshot',
+        desc: 'Rename the practice theme directory to match the Assignment 2 brief, set your author metadata, and collect visual evidence.',
+        verify: 'Open Appearance → Themes in WP Admin and verify "CMS II Project" by Sneza M Drouin is active with screenshot.jpeg visible.',
+        tasks: [
+          { id: 'p0-t1', text: 'Keep a safe backup copy of your original <code>serbia-guide-practice</code> folder on Google Drive before editing.' },
+          { id: 'p0-t2', text: 'Rename your active theme folder to <code>cms2-project</code> inside <code>app/public/wp-content/themes/</code>.' },
+          { id: 'p0-t3', text: 'Update <code>style.css</code> header: <code>Theme Name: CMS II Project</code>, <code>Author: Sneza M Drouin</code>, <code>Text Domain: cms2-project</code>.' },
+          { id: 'p0-t4', text: 'Capture and save a screenshot of your 4+ colour palette (<code>#0C4076</code>, <code>#C6363C</code>, <code>#ffffff</code>, <code>#e5efec</code>) for your ZIP submission.' },
+          { id: 'p0-t5', text: 'Verify at least <strong>5 Serbia destination images</strong> are used across your hero banner, featured images, and page/card content.' }
+        ]
+      },
+      {
+        id: 'phase-1',
+        category: 'a2',
+        tag: 'Phase 1 • Assignment 2 Foundation',
+        title: '6 PHP File Hierarchy Comments, 4+ Pages & page.php Featured Image Logic',
+        desc: 'Ensure all 6 mandatory PHP files answer the 3 hierarchy questions and your WordPress pages/menus are properly wired.',
+        verify: 'Click through Home + all 3+ Serbia inner pages in the browser; test one page WITH a featured image and one WITHOUT.',
+        tasks: [
+          { id: 'p1-t1', text: 'Add the 3-question block comment (hierarchy role, why separate, how connected) to the top of <code>index.php</code>, <code>page.php</code>, <code>footer.php</code>, <code>header.php</code>, <code>functions.php</code>, and <code>front-page.php</code>.' },
+          { id: 'p1-t2', text: 'Confirm at least <strong>4 published pages</strong> exist (Home + 3 Serbia pages such as Belgrade, Novi Sad, Tara National Park) and Home is set under Settings → Reading.' },
+          { id: 'p1-t3', text: 'Confirm Primary navigation menu displays all site pages via <code>wp_nav_menu()</code> in <code>header.php</code>.' },
+          { id: 'p1-t4', text: 'Confirm <code>page.php</code> outputs dynamic <code>the_title()</code>, checks <code>has_post_thumbnail()</code>, and calls <code>the_post_thumbnail()</code>.' }
+        ]
+      },
+      {
+        id: 'phase-2',
+        category: 'a2',
+        tag: 'Phase 2 • Assignment 2 Two-Phase Footer',
+        title: 'Save Manual footer-phase1.php Evidence & Document Phase 2 Refactor',
+        desc: 'Preserve Phase 1 manual PHP arrays/loops for grading evidence while keeping active footer.php upgraded for Final Project 1.',
+        verify: 'Confirm cms2-project/footer-phase1.php exists with 3 arrays, 3 foreach loops, and column HTML comments.',
+        tasks: [
+          { id: 'p2-t1', text: 'Create <code>cms2-project/footer-phase1.php</code> containing 3 Serbia link arrays, 3 <code>foreach</code> loops, and an HTML comment above each column explaining its purpose.' },
+          { id: 'p2-t2', text: 'Document your Phase 1 → Phase 2 footer AI refactor (exact prompt, what AI suggested, what you kept/changed) in <code>ai-dev-log.md</code>.' }
+        ]
+      },
+      {
+        id: 'phase-3',
+        category: 'fp1',
+        tag: 'Phase 3 • Final Project 1 General & Typography',
+        title: 'Font Enqueue Explanation Comment, Bootstrap 5 & @media Breakpoint Docs',
+        desc: 'Your functions.php already enqueues Bootstrap 5.3.8, Lora, and Bootstrap Icons—add the required font explanation comment and verify CSS rules.',
+        verify: 'Inspect page source / DevTools to confirm Lora loads on headings, Bootstrap grid works, and zero horizontal scrolling occurs at 375px, 768px, and 1200px.',
+        tasks: [
+          { id: 'p3-t1', text: 'Add a detailed comment directly above <code>wp_enqueue_style(\'serbia-font\', ...)</code> in <code>functions.php</code> explaining: <strong>which font</strong> (Lora), <strong>why it fits Serbia\'s visual identity</strong>, and <strong>how it is loaded</strong>.' },
+          { id: 'p3-t2', text: 'Verify <code>style.css</code> loads after Bootstrap and font dependencies, and every <code>@media</code> query has a comment above it explaining the breakpoint, what changes, and why.' }
+        ]
+      },
+      {
+        id: 'phase-4',
+        category: 'fp1',
+        tag: 'Phase 4 • Final Project 1 Header & AI Critique',
+        title: 'Header Widget Area (with Mandatory AI Critique) & 4+ Social Media Icons',
+        desc: 'Complete the AI critique workflow for register_sidebar() / dynamic_sidebar() and upgrade the 2 reference links to 4+ social icons.',
+        verify: 'Add a widget to Appearance → Widgets → Header, confirm it appears above all other header content, then remove it and verify no empty wrapper renders.',
+        tasks: [
+          { id: 'p4-t1', text: 'Prompt an AI assistant for Header widget registration/display code, critique it against modern WordPress standards (<code>register_sidebar()</code> args + <code>is_active_sidebar()</code> check), and log your findings in <code>ai-dev-log.md</code>.' },
+          { id: 'p4-t2', text: 'Verify <code>register_sidebar()</code> in <code>functions.php</code> uses <code>\'name\' =&gt; \'Header\'</code> and renders at the very top of <code>header.php</code> inside <code>if (is_active_sidebar(\'header-area\'))</code>.' },
+          { id: 'p4-t3', text: 'Replace the 2 practice reference links in <code>header.php</code> with at least <strong>4 social media icons</strong> (Bootstrap Icons) with descriptive <code>aria-label</code> attributes on each <code>&lt;a&gt;</code> and <code>aria-hidden="true"</code> on each <code>&lt;i&gt;</code>.' }
+        ]
+      },
+      {
+        id: 'phase-5',
+        category: 'fp1',
+        tag: 'Phase 5 • Final Project 1 Home Page & Footer Menus',
+        title: '2 Documented Template Parts, 3+ Dynamic Testimonials, 6 Cards & 3 Footer Menus',
+        desc: 'Upgrade your Serbia front-page.php and template-parts/ to meet all Final Project 1 dynamic content and layout requirements.',
+        verify: 'Check Home page at mobile (1 col), tablet (2 cols), and desktop (3 cols) for 6 Serbia cards, 3+ testimonials, hero banner, and 3 distinct WP-managed footer menus.',
+        tasks: [
+          { id: 'p5-t1', text: 'Create/verify <strong>2 custom template parts</strong> (<code>template-parts/hero.php</code> + <code>template-parts/testimonials.php</code> or <code>cards.php</code>) with PHP comments answering <strong>(a)</strong> what it contains, <strong>(b)</strong> why extracted, and <strong>(c)</strong> where called from.' },
+          { id: 'p5-t2', text: 'In <code>template-parts/testimonials.php</code>, store at least <strong>3 Serbia visitor testimonials</strong> in an array of arrays and render them with a <code>foreach</code> loop and <code>esc_html()</code>.' },
+          { id: 'p5-t3', text: 'Expand <code>$cards</code> in <code>front-page.php</code> (or <code>template-parts/cards.php</code>) to <strong>6 Bootstrap cards</strong> (<code>col-12 col-md-6 col-lg-4</code>) personalized to Serbia and restyled with your palette.' },
+          { id: 'p5-t4', text: 'In WP Admin → Appearance → Menus, create and assign 3 separate menus to <code>footer-one</code>, <code>footer-two</code>, and <code>footer-three</code> and confirm <code>footer.php</code> outputs them via <code>wp_nav_menu()</code>.' }
+        ]
+      },
+      {
+        id: 'phase-6',
+        category: 'fp1',
+        tag: 'Phase 6 • Documentation, Video & ZIP Submission',
+        title: 'Complete ai-dev-log.md, Record Demo Video & Verify .ZIP Package',
+        desc: 'Finish all Markdown log entries (50–100 words each), record your walkthrough, and double-check your ZIP archive before Nov 27 @ 3:00 PM.',
+        verify: 'Extract your .ZIP into a temporary test folder to confirm all PHP files, assets, palette screenshot, and ai-dev-log.md are intact.',
+        tasks: [
+          { id: 'p6-t1', text: 'Ensure <code>ai-dev-log.md</code> includes Assignment 2 entries PLUS at least <strong>4 new Final Project 1 entries (50–100 words each)</strong>, including the Header widget AI critique and at least one feature built <strong>100% without AI</strong>.' },
+          { id: 'p6-t2', text: 'Record your screen walkthrough demonstrating your live Serbia site, WP Admin (widgets, 3 footer menus, dynamic pages), and code explanations; upload and verify sharing permissions.' },
+          { id: 'p6-t3', text: 'Compress <code>cms2-project</code> (including <code>ai-dev-log.md</code>, <code>footer-phase1.php</code>, palette screenshot, and all assets) using standard <strong>.ZIP</strong> compression (not .rar).' },
+          { id: 'p6-t4', text: 'Submit the <code>.zip</code> file on Brightspace before <strong>Nov 27, 2026 at 3:00 PM</strong> and paste both your <strong>site URL</strong> and <strong>video presentation URL</strong> in the submission comment.' }
+        ]
+      }
+    ];
+
+    const SNIPPETS = [
+      {
+        title: '1. style.css Theme Header & Serbia Palette Variables',
+        file: 'cms2-project/style.css (Lines 1–16)',
+        code: `/*
+Theme Name: CMS II Project
+Author: Sneza M Drouin
+Description: Custom Serbia destination theme for MTM6303 Assignment 2 & Final Project 1.
+Version: 1.0
+Text Domain: cms2-project
+*/
+:root {
+   --ink: #0C4076;
+   --brand: #C6363C;
+   --paper: #ffffff;
+   --soft: #e5efec;
+}`
+      },
+      {
+        title: '2. 3-Question File Header Comments for All 6 Required PHP Files',
+        file: 'Top of functions.php, header.php, front-page.php, page.php, index.php, footer.php',
+        code: `/* === functions.php ===
+ * 1. Template hierarchy role: Loaded automatically by WordPress on every request before templates execute; does not render a page directly.
+ * 2. Why separate file: Centralizes theme supports, asset enqueuing, menu locations, and widget areas cleanly in one setup file.
+ * 3. How it connects: Supplies styles/fonts to header.php and registers menus/sidebars rendered by header.php and footer.php.
+ */
+
+/* === header.php ===
+ * 1. Template hierarchy role: Shared top document and site header partial included across all main page templates.
+ * 2. Why separate file: Prevents duplicating <!doctype html>, <head>, wp_head(), social links, header widgets, and primary navigation.
+ * 3. How it connects: Included at the top of front-page.php, page.php, and index.php via get_header(); paired with footer.php.
+ */
+
+/* === front-page.php ===
+ * 1. Template hierarchy role: Top-priority template for the static front page when configured under Settings -> Reading.
+ * 2. Why separate file: Gives the Serbia homepage a custom layout (hero, intro, testimonials, 6 cards) distinct from standard pages.
+ * 3. How it connects: Calls get_header(), loads custom partials via get_template_part(), and closes with get_footer().
+ */
+
+/* === page.php ===
+ * 1. Template hierarchy role: Default template for singular WordPress 'page' entries (inner Serbia destination pages).
+ * 2. Why separate file: Provides a consistent page title header, conditional featured image display, and content container for inner pages.
+ * 3. How it connects: Calls get_header(), runs the Loop with has_post_thumbnail()/the_post_thumbnail()/the_content(), and calls get_footer().
+ */
+
+/* === index.php ===
+ * 1. Template hierarchy role: Ultimate fallback template at the bottom of the WordPress hierarchy if no specific template matches.
+ * 2. Why separate file: Ensures WordPress always has a valid template fallback to render posts or archives without errors.
+ * 3. How it connects: Calls get_header(), loops through queried posts, and calls get_footer().
+ */
+
+/* === footer.php ===
+ * 1. Template hierarchy role: Shared bottom footer and closing HTML document partial across all templates.
+ * 2. Why separate file: Keeps the 3 WordPress-managed footer menu columns and wp_footer() hook maintainable in one place.
+ * 3. How it connects: Called at the bottom of front-page.php, page.php, and index.php via get_footer(), closing tags opened in header.php.
+ */`
+      },
+      {
+        title: '3. functions.php — Font Enqueue Explanation Comment + Header Widget Area',
+        file: 'cms2-project/functions.php',
+        code: `function serbia_assets() {
+    // Load Bootstrap 5 CSS first so our theme stylesheet can override component styles.
+    wp_enqueue_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css', [], '5.3.8');
+
+    /*
+     * Google Font: Lora (weights 400 and 600).
+     * Why it fits: Lora's classic editorial serifs evoke Serbia's historic architecture, monasteries, and cultural heritage
+     * while pairing cleanly with sans-serif body text for high readability.
+     * How it is loaded: Enqueued properly via wp_enqueue_style() from Google Fonts CDN before style.css loads.
+     */
+    wp_enqueue_style('serbia-font', 'https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap', [], null);
+
+    // Load Bootstrap Icons for accessible social media icons in the header.
+    wp_enqueue_style('bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css', [], '1.13.1');
+
+    // Load main theme stylesheet after external libraries so custom palette rules take precedence.
+    wp_enqueue_style('serbia-style', get_stylesheet_uri(), ['bootstrap', 'serbia-font', 'bootstrap-icons'], '1.0');
+}
+add_action('wp_enqueue_scripts', 'serbia_assets');
+
+/**
+ * Register the Header widget area so content managers can place announcements
+ * or widgets above all other header content via Appearance -> Widgets.
+ */
+function serbia_widgets_init() {
+    register_sidebar([
+        'name'          => 'Header',
+        'id'            => 'header-area',
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+    ]);
+}
+add_action('widgets_init', 'serbia_widgets_init');`
+      },
+      {
+        title: '4. header.php — Topmost Header Widget Area + 4 Accessible Social Links',
+        file: 'cms2-project/header.php (Inside <header class="site-header">)',
+        code: `<header class="site-header">
+    <?php if (is_active_sidebar('header-area')) : ?>
+        <div class="header-widgets">
+            <?php dynamic_sidebar('header-area'); ?>
+        </div>
+    <?php endif; ?>
+
+    <a class="site-title" href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>
+
+    <?php wp_nav_menu([
+        'theme_location'       => 'primary',
+        'container'            => 'nav',
+        'container_aria_label' => 'Primary Navigation',
+        'fallback_cb'          => false,
+    ]); ?>
+
+    <!-- Social media icon links (minimum 4 required) using Bootstrap Icons -->
+    <nav class="reference-links" aria-label="Serbia Travel Social Media">
+        <a href="https://www.instagram.com/serbiatourism/" target="_blank" rel="noopener noreferrer" aria-label="Serbia Tourism on Instagram">
+            <i class="bi bi-instagram" aria-hidden="true"></i>
+        </a>
+        <a href="https://www.facebook.com/serbiatourism/" target="_blank" rel="noopener noreferrer" aria-label="Serbia Tourism on Facebook">
+            <i class="bi bi-facebook" aria-hidden="true"></i>
+        </a>
+        <a href="https://www.youtube.com/user/serbiatourism" target="_blank" rel="noopener noreferrer" aria-label="Serbia Tourism on YouTube">
+            <i class="bi bi-youtube" aria-hidden="true"></i>
+        </a>
+        <a href="https://x.com/serbiatourism" target="_blank" rel="noopener noreferrer" aria-label="Serbia Tourism on X">
+            <i class="bi bi-twitter-x" aria-hidden="true"></i>
+        </a>
+    </nav>
+</header>`
+      },
+      {
+        title: '5. template-parts/hero.php & template-parts/testimonials.php (With a/b/c Comments)',
+        file: 'cms2-project/template-parts/hero.php & template-parts/testimonials.php',
+        code: `<?php
+/**
+ * Template Part: Hero Banner (template-parts/hero.php)
+ * (a) Contains: The top Serbia hero heading, introductory tagline, and conditional large featured image.
+ * (b) Why extracted: Separating the hero markup keeps front-page.php concise, readable, and easier to maintain independently.
+ * (c) Where called from: Called inside the WordPress Loop in front-page.php via get_template_part('template-parts/hero').
+ */
+?>
+<section class="hero">
+    <h1>Discover the Heart of Serbia</h1>
+    <p>From Belgrade's historic fortresses to Tara's emerald canyons and vibrant kafana culture.</p>
+    <?php if (has_post_thumbnail()) {
+        the_post_thumbnail('large');
+    } ?>
+</section>
+
+<?php
+/**
+ * Template Part: Dynamic Visitor Testimonials (template-parts/testimonials.php)
+ * (a) Contains: A PHP array of Serbia visitor testimonials and a foreach loop rendering each quote safely.
+ * (b) Why extracted: Isolates testimonial data and markup from front-page.php for cleaner code organization and reusability.
+ * (c) Where called from: Called in front-page.php via get_template_part('template-parts/testimonials').
+ */
+$testimonials = [
+    [
+        'name'  => 'Milica K.',
+        'place' => 'Belgrade & Zemun',
+        'quote' => 'Watching sunset over the Danube from Kalemegdan Fortress was the highlight of our trip.',
+    ],
+    [
+        'name'  => 'Liam T.',
+        'place' => 'Tara National Park',
+        'quote' => 'The Banjska Stena viewpoint over the Drina River canyon looks straight out of a painting.',
+    ],
+    [
+        'name'  => 'Elena R.',
+        'place' => 'Novi Sad',
+        'quote' => 'Strolling through Petrovaradin Fortress and enjoying fresh burek in the old town was unforgettable.',
+    ],
+];
+?>
+<section aria-labelledby="testimonials-heading">
+    <h2 id="testimonials-heading">Traveller Stories from Serbia</h2>
+    <div class="row g-4">
+        <?php foreach ($testimonials as $item) : ?>
+            <div class="col-12 col-md-4">
+                <figure class="card h-100 p-3">
+                    <blockquote class="blockquote mb-2">
+                        <p class="mb-0">&ldquo;<?php echo esc_html($item['quote']); ?>&rdquo;</p>
+                    </blockquote>
+                    <figcaption class="blockquote-footer mt-auto mb-0">
+                        <?php echo esc_html($item['name']); ?> &mdash; <cite><?php echo esc_html($item['place']); ?></cite>
+                    </figcaption>
+                </figure>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>`
+      },
+      {
+        title: '6. front-page.php — 6 Personalized Serbia Bootstrap Cards Section',
+        file: 'cms2-project/front-page.php (Cards Section)',
+        code: `<?php
+// Six Serbia destination highlight cards looped into a responsive Bootstrap 5 grid.
+$cards = [
+    [
+        'title' => 'Belgrade Fortress',
+        'badge' => 'Capital & History',
+        'text'  => 'Explore centuries of history where the Sava and Danube rivers meet at Kalemegdan.',
+        'path'  => '/belgrade/',
+    ],
+    [
+        'title' => 'Novi Sad & Petrovaradin',
+        'badge' => 'Culture & Danube',
+        'text'  => 'Walk colourful Austro-Hungarian streets and climb the Gibraltar of the Danube.',
+        'path'  => '/novi-sad/',
+    ],
+    [
+        'title' => 'Tara National Park',
+        'badge' => 'Nature & Views',
+        'text'  => 'Hike forested mountain trails above the turquoise Drina River gorge.',
+        'path'  => '/tara/',
+    ],
+    [
+        'title' => 'Skadarlija Bohemian Quarter',
+        'badge' => 'Food & Music',
+        'text'  => 'Experience cobblestone charm, live tamburica music, and traditional Serbian dishes.',
+        'path'  => '/dining/',
+    ],
+    [
+        'title' => 'Studenica Monastery',
+        'badge' => 'UNESCO Heritage',
+        'text'  => 'Visit 12th-century white marble churches and medieval frescoes nestled in central Serbia.',
+        'path'  => '/heritage/',
+    ],
+    [
+        'title' => 'Uvac Canyon Meanders',
+        'badge' => 'Adventure',
+        'text'  => 'Spot griffon vultures soaring above dramatic limestone river bends.',
+        'path'  => '/travel-guide/',
+    ],
+];
+?>
+<section aria-labelledby="cards-heading">
+    <h2 id="cards-heading">Explore Serbia Highlights</h2>
+    <div class="row g-4">
+        <?php foreach ($cards as $card) : ?>
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge align-self-start mb-2" style="background-color: var(--ink); color: #fff;">
+                            <?php echo esc_html($card['badge']); ?>
+                        </span>
+                        <h3 class="card-title h5"><?php echo esc_html($card['title']); ?></h3>
+                        <p class="card-text flex-grow-1"><?php echo esc_html($card['text']); ?></p>
+                        <a class="btn btn-primary mt-2" href="<?php echo esc_url(home_url($card['path'])); ?>">
+                            Explore Destination
+                        </a>
+                    </div>
+                </article>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>`
+      },
+      {
+        title: '7. footer-phase1.php — Manual PHP Arrays & Foreach Loops (Assignment 2 Evidence)',
+        file: 'cms2-project/footer-phase1.php (Documentation file only)',
+        code: `<?php
+/**
+ * Assignment 2 Phase 1 Manual Footer (Documentation Only — Not Loaded by WordPress).
+ * Demonstrates 3 manual PHP arrays and 3 separate foreach loops prior to Phase 2 refactor.
+ */
+$attractions = [
+    ['label' => 'Belgrade Fortress', 'url' => '/belgrade/'],
+    ['label' => 'Tara National Park', 'url' => '/tara/'],
+];
+$culture = [
+    ['label' => 'Novi Sad Old Town', 'url' => '/novi-sad/'],
+    ['label' => 'Serbian Cuisine', 'url' => '/dining/'],
+];
+$resources = [
+    ['label' => 'Travel Tips', 'url' => '/travel-guide/'],
+    ['label' => 'Home', 'url' => '/'],
+];
+?>
+<footer class="site-footer">
+    <div class="footer-columns">
+        <!-- Column 1: Showcases top historical and natural landmarks in Serbia -->
+        <section>
+            <h2>Top Destinations</h2>
+            <ul>
+                <?php foreach ($attractions as $link) : ?>
+                    <li><a href="<?php echo esc_url(home_url($link['url'])); ?>"><?php echo esc_html($link['label']); ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
+
+        <!-- Column 2: Highlights Serbian cultural cities and local dining -->
+        <section>
+            <h2>Culture &amp; Dining</h2>
+            <ul>
+                <?php foreach ($culture as $link) : ?>
+                    <li><a href="<?php echo esc_url(home_url($link['url'])); ?>"><?php echo esc_html($link['label']); ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
+
+        <!-- Column 3: Offers practical visitor planning links -->
+        <section>
+            <h2>Visitor Resources</h2>
+            <ul>
+                <?php foreach ($resources as $link) : ?>
+                    <li><a href="<?php echo esc_url(home_url($link['url'])); ?>"><?php echo esc_html($link['label']); ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
+    </div>
+    <p>&copy; <?php echo esc_html(date('Y')); ?> Serbia Destination Guide &mdash; Sneza M Drouin</p>
+</footer>
+<?php wp_footer(); ?>
+</body>
+</html>`
+      },
+      {
+        title: '8. ai-dev-log.md — Sample Entries (50–100 Words Each, Including Widget AI Critique)',
+        file: 'cms2-project/ai-dev-log.md',
+        code: `# AI Development Log — CMS II Project (Serbia Destination Theme)
+**Student:** Sneza M Drouin | **Course:** 26F_MTM6303_010
+
+| Section | Prompt Used | What AI Generated | What You Changed & Why | What You Wrote Yourself |
+| :--- | :--- | :--- | :--- | :--- |
+| Footer Phase 2 Refactor (A2) | "Refactor my 3-column PHP footer arrays into a cleaner nested loop with semantic HTML and ARIA labels." | AI grouped the three link arrays into one associative array and used nested foreach loops with nav aria-labels, though it initially omitted esc_url(). | I added esc_url(home_url()) and esc_html() escaping on every output link and verified all destinations matched footer-phase1.php. | I wrote the original three Serbia arrays, column HTML comments, and tested every link manually in Local. |
+| Header Widget Area Critique (FP1) | "Write WordPress PHP code to register a Header widget area and display it at the top of header.php." | AI generated register_sidebar() using an older numeric ID and called dynamic_sidebar('Header') directly in header.php without checking if widgets existed. | I replaced the numeric ID with explicit slug 'header-area', added '%1$s' and '%2$s' placeholders, and wrapped output in if (is_active_sidebar('header-area')) so empty wrappers never render. | I hooked serbia_widgets_init to widgets_init, placed the block above all header content, and tested adding/removing blocks in WP Admin. |
+| Three Footer Navigation Menus (FP1) | Did not use AI | Not applicable — built entirely without AI using WordPress developer docs for register_nav_menus() and wp_nav_menu() plus Week 10 class notes. | Kept my three Serbia footer column headings while replacing static arrays with WordPress-managed menu locations so content managers can edit links in WP Admin. | I registered footer-one, footer-two, and footer-three in functions.php, wrote the wp_nav_menu() loop in footer.php, and assigned three menus in the dashboard. |
+| 6 Serbia Bootstrap Cards (FP1) | "Create a responsive 6-card grid in Bootstrap 5 using a PHP array and foreach loop." | AI generated a 6-item PHP array and Bootstrap col-md-4 cards with generic placeholder text and default blue buttons. | I updated the grid classes to col-12 col-md-6 col-lg-4 for mobile/tablet/desktop breakpoints and restyled card borders and buttons using my #0C4076 and #C6363C Serbian palette. | I wrote all six Serbia destination titles, badges, descriptions, and internal page paths, and tested responsiveness across viewport widths. |
+| Template Parts & Testimonials (FP1) | "Structure a PHP array of 3 visitor testimonials and output them inside a Bootstrap grid." | AI returned a basic array of quotes and HTML blockquote markup without WordPress escaping or template-part documentation headers. | I wrapped all strings in esc_html(), moved the section into template-parts/testimonials.php, and added the required three-question (a/b/c) documentation comment block. | I authored all three Serbia visitor testimonials, created template-parts/hero.php, and connected both partials to front-page.php with get_template_part(). |`
+      }
+    ];
+
+    let checksState = {};
+    let notesState = {};
+    let checklistFilter = 'all';
+
+    function loadState() {
+      try {
+        checksState = JSON.parse(localStorage.getItem(STORAGE_CHECKS) || '{}');
+      } catch (e) {
+        checksState = {};
+      }
+      try {
+        notesState = JSON.parse(localStorage.getItem(STORAGE_NOTES) || '{}');
+      } catch (e) {
+        notesState = {};
+      }
+    }
+
+    function saveChecks() {
+      try {
+        localStorage.setItem(STORAGE_CHECKS, JSON.stringify(checksState));
+      } catch (e) {}
+    }
+
+    function saveNotes() {
+      try {
+        localStorage.setItem(STORAGE_NOTES, JSON.stringify(notesState));
+      } catch (e) {}
+    }
+
+    function renderFollowAlong() {
+      const container = document.getElementById('phases-container');
+      container.innerHTML = PHASES.map(phase => {
+        const allDone = phase.tasks.every(t => Boolean(checksState[t.id]));
+        const tasksHtml = phase.tasks.map(task => {
+          const isChecked = Boolean(checksState[task.id]);
+          return `
+            <li class="task-item ${isChecked ? 'checked' : ''}" data-search="${escapeAttr(stripHtml(task.text) + ' ' + phase.title)}">
+              <input type="checkbox" id="fa-${task.id}" ${isChecked ? 'checked' : ''} onchange="toggleTask('${task.id}', this.checked)" />
+              <label for="fa-${task.id}" class="task-text" style="cursor:pointer;">${task.text}</label>
+            </li>
+          `;
+        }).join('');
+
+        return `
+          <article class="phase-card ${allDone ? 'phase-done' : ''}" data-phase-id="${phase.id}" data-category="${phase.category}">
+            <div class="phase-header">
+              <div>
+                <div class="phase-tag ${phase.category === 'fp1' ? 'fp1' : ''}">${phase.tag}</div>
+                <h3 class="phase-title">${phase.title}</h3>
+              </div>
+              <span class="badge">${phase.tasks.filter(t => checksState[t.id]).length} / ${phase.tasks.length}</span>
+            </div>
+            <p class="phase-desc">${phase.desc}</p>
+            <ul class="task-list">${tasksHtml}</ul>
+            <div class="verify-box"><strong>Verify in Browser / VS Code:</strong> ${phase.verify}</div>
+            <div class="note-box">
+              <label for="note-${phase.id}">Personal Progress Note (auto-saved):</label>
+              <textarea id="note-${phase.id}" class="note-textarea" placeholder="Add notes for this phase (e.g., page URLs, tested widgets, video timestamps)..." oninput="updateNote('${phase.id}', this.value)">${escapeHtml(notesState[phase.id] || '')}</textarea>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderMasterChecklist() {
+      const container = document.getElementById('master-checklist-container');
+      const query = (document.getElementById('step-search').value || '').trim().toLowerCase();
+
+      const groupsHtml = PHASES.map(phase => {
+        if (checklistFilter === 'a2' && phase.category !== 'a2') return '';
+        if (checklistFilter === 'fp1' && phase.category !== 'fp1') return '';
+
+        const filteredTasks = phase.tasks.filter(task => {
+          const isChecked = Boolean(checksState[task.id]);
+          if (checklistFilter === 'unchecked' && isChecked) return false;
+          if (checklistFilter === 'checked' && !isChecked) return false;
+          if (query) {
+            const hay = (stripHtml(task.text) + ' ' + phase.title + ' ' + phase.tag).toLowerCase();
+            if (!hay.includes(query)) return false;
+          }
+          return true;
+        });
+
+        if (filteredTasks.length === 0) return '';
+
+        return `
+          <div class="phase-card">
+            <div class="phase-header">
+              <div>
+                <div class="phase-tag ${phase.category === 'fp1' ? 'fp1' : ''}">${phase.tag}</div>
+                <h3 class="phase-title">${phase.title}</h3>
+              </div>
+            </div>
+            <ul class="task-list" style="margin-bottom:0;">
+              ${filteredTasks.map(task => {
+                const isChecked = Boolean(checksState[task.id]);
+                return `
+                  <li class="task-item ${isChecked ? 'checked' : ''}">
+                    <input type="checkbox" id="mc-${task.id}" ${isChecked ? 'checked' : ''} onchange="toggleTask('${task.id}', this.checked)" />
+                    <label for="mc-${task.id}" class="task-text" style="cursor:pointer;">${task.text}</label>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = groupsHtml || `<div class="phase-card"><p class="phase-desc" style="margin:0;">No checklist items match your current filter.</p></div>`;
+    }
+
+    function renderSnippets() {
+      const container = document.getElementById('snippets-container');
+      const query = (document.getElementById('step-search').value || '').trim().toLowerCase();
+
+      const filtered = SNIPPETS.filter(s => {
+        if (!query) return true;
+        return (s.title + ' ' + s.file + ' ' + s.code).toLowerCase().includes(query);
+      });
+
+      container.innerHTML = filtered.map((snip, idx) => `
+        <article class="snippet-card">
+          <div class="snippet-header">
+            <div>
+              <h3 class="snippet-title">${snip.title}</h3>
+              <div class="snippet-file">${snip.file}</div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="copySnippet(${idx}, this)">Copy Code</button>
+          </div>
+          <pre class="code-block"><code id="code-snip-${idx}">${escapeHtml(snip.code)}</code></pre>
+        </article>
+      `).join('') || `<div class="phase-card"><p class="phase-desc" style="margin:0;">No code snippets match your search filter.</p></div>`;
+    }
+
+    function toggleTask(taskId, checked) {
+      checksState[taskId] = checked;
+      saveChecks();
+      updateProgressBar();
+      renderFollowAlong();
+      renderMasterChecklist();
+      applyFilters();
+    }
+
+    function updateNote(phaseId, val) {
+      notesState[phaseId] = val;
+      saveNotes();
+    }
+
+    function updateProgressBar() {
+      const allTasks = PHASES.flatMap(p => p.tasks);
+      const total = allTasks.length;
+      const done = allTasks.filter(t => Boolean(checksState[t.id])).length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('progress-label').textContent = `${done} / ${total} completed (${pct}%)`;
+      document.getElementById('progress-fill').style.width = `${pct}%`;
+      document.getElementById('progress-bar-aria').setAttribute('aria-valuenow', String(pct));
+    }
+
+    function switchView(viewName) {
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+      const panel = document.getElementById(`view-${viewName}`);
+      const btn = document.querySelector(`.tab-btn[data-view="${viewName}"]`);
+      if (panel) panel.classList.add('active');
+      if (btn) btn.classList.add('active');
+
+      try {
+        localStorage.setItem(STORAGE_VIEW, viewName);
+      } catch (e) {}
+    }
+
+    function setChecklistFilter(filter) {
+      checklistFilter = filter;
+      document.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+      });
+      renderMasterChecklist();
+    }
+
+    function applyFilters() {
+      const query = (document.getElementById('step-search').value || '').trim().toLowerCase();
+
+      document.querySelectorAll('#phases-container .phase-card').forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = !query || text.includes(query) ? '' : 'none';
+      });
+
+      renderMasterChecklist();
+      renderSnippets();
+    }
+
+    function copySnippet(idx, btn) {
+      const codeEl = document.getElementById(`code-snip-${idx}`);
+      if (!codeEl) return;
+      copyTextFallback(codeEl.innerText, () => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        showToast('Snippet copied to clipboard!');
+        setTimeout(() => { btn.textContent = orig; }, 1600);
+      });
+    }
+
+    function copyTextFallback(text, onSuccess) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        if (onSuccess) onSuccess();
+      } catch (e) {
+        showToast('Press Ctrl+C / Cmd+C to copy.');
+      } finally {
+        document.body.removeChild(ta);
+      }
+    }
+
+    function openBackupModal() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        repo: 'https://github.com/mysticstorms/final-checklist-26F',
+        checks: checksState,
+        notes: notesState
+      };
+      document.getElementById('backup-json-area').value = JSON.stringify(payload, null, 2);
+      document.getElementById('backup-modal').classList.add('open');
+    }
+
+    function copyBackupJson() {
+      const val = document.getElementById('backup-json-area').value;
+      copyTextFallback(val, () => showToast('Backup JSON copied!'));
+    }
+
+    function importBackupJson() {
+      try {
+        const raw = document.getElementById('backup-json-area').value;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed.checks === 'object') {
+          checksState = parsed.checks;
+          saveChecks();
+        }
+        if (parsed && typeof parsed.notes === 'object') {
+          notesState = parsed.notes;
+          saveNotes();
+        }
+        updateProgressBar();
+        renderFollowAlong();
+        renderMasterChecklist();
+        closeModal('backup-modal');
+        showToast('Progress & notes imported!');
+      } catch (e) {
+        showToast('Invalid JSON format — please check your pasted backup.');
+      }
+    }
+
+    function openResetModal() {
+      document.getElementById('reset-modal').classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function confirmReset() {
+      checksState = {};
+      notesState = {};
+      saveChecks();
+      saveNotes();
+      updateProgressBar();
+      renderFollowAlong();
+      renderMasterChecklist();
+      closeModal('reset-modal');
+      showToast('All checkboxes and notes reset.');
+    }
+
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    function updateCountdown() {
+      const due = new Date('2026-11-27T15:00:00-05:00').getTime();
+      const diff = due - Date.now();
+      const el = document.getElementById('countdown-display');
+      if (diff <= 0) {
+        el.textContent = 'Deadline reached — submit ZIP & URLs now';
+        return;
+      }
+      const hrs = Math.floor(diff / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      el.textContent = `${hrs}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s remaining`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(str) {
+      return escapeHtml(str).replace(/'/g, '&#39;');
+    }
+
+    function stripHtml(html) {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      return div.textContent || div.innerText || '';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      updateProgressBar();
+      renderFollowAlong();
+      renderMasterChecklist();
+      renderSnippets();
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      try {
+        const savedView = localStorage.getItem(STORAGE_VIEW);
+        if (savedView && ['follow', 'checklist', 'snippets'].includes(savedView)) {
+          switchView(savedView);
+        }
+      } catch (e) {}
+    });
+  </script>
+</body>
+</html>
